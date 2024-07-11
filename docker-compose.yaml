@@ -45,6 +45,7 @@ services:
     container_name: store
     ports:
       - '8080:8080'
+      - '9090:9090'   # for Actuator
 
 volumes:
   pgadmin:
