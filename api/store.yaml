@@ -1,0 +1,38 @@
+openapi: 3.0.0
+
+info:
+  title: Simple shop API
+  description: Demo project for customer
+  version: 0.0.1
+
+paths:
+  /items:
+    get:
+      operationId: find all
+      summary: returns list of items
+      description: allows to fetch all items
+      responses:
+        '200':
+          description: a JSON array of items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'   # objects should be
+
+
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+
+
