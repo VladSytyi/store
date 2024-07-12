@@ -1,30 +1,38 @@
 version: '3.9'
+
 services:
   db:
     image: postgres:14.1-alpine
     restart: always
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=pw1
-      - SCHEMA=store
-      - POSTGRES_DB=store
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - SCHEMA=${DB_SCHEMA}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
   pgadmin:
-#    To connect to the database, you need to use the following credentials:
-#     host.docker.internal
+    #    To connect to the database, you need to use the following credentials:
+    #     host.docker.internal
     container_name: pgadmin4_container
     image: dpage/pgadmin4
     restart: always
     environment:
-#      Use the following credentials to log in:
+      #      Use the following credentials to log in:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "5050:80"
+    networks:
+      - app-network
+    depends_on:
+      - db
+
   dragonfly:
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
     ulimits:
@@ -37,18 +45,36 @@ services:
     # network_mode: "host"
     volumes:
       - dragonflydata:/data
-  app:
-    image: 'store:latest'
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: store
-    ports:
-      - '8080:8080'
-      - '9090:9090'   # for Actuator
+
+#  app:
+#    image: 'store:latest'
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: store
+#    environment:
+#      DB_HOST: db
+#      DB_PORT: ${DB_PORT}
+#      DB_USER: ${DB_USER}
+#      DB_PASSWORD: ${DB_PASSWORD}
+#      DB_NAME: ${DB_NAME}
+#      DB_SCHEMA: ${DB_SCHEMA}
+#      JOOQ_URL: ${JOOQ_URL}
+#
+#    ports:
+#      - '8080:8080'
+#      - '9090:9090'   # for Actuator
+#    depends_on:
+#      - db
+#    networks:
+#      - app-network
 
 volumes:
   pgadmin:
   dragonflydata:
   db:
     driver: local
+
+networks:
+  app-network:
+    driver: bridge

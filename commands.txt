@@ -1,0 +1,5 @@
+ ./mvnw clean package -DDB_HOST=localhost -DDB_PORT=5432 -DDB_NAME=store -DDB_USER=user -DDB_PASSWORD=pw1 -DJOOQ_URL=jdbc:postgresql://localhost:5432/store
+
+
+
+ JOOQ_URL=jdbc:postgresql://localhost:5432/store"
