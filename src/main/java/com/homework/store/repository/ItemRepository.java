@@ -10,7 +10,7 @@ public interface ItemRepository {
     List<Item> findAll();
     Optional<Item> findById(Long id);
 
-    void save(Item item);
+    Item save(Item item);
     void saveAll(List<Item> items);
 
     Item update(Item item);

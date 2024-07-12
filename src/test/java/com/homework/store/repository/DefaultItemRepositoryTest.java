@@ -102,9 +102,9 @@ class DefaultItemRepositoryTest {
     @Test
     void save() {
         Item item = new Item(null, "Smartphone", "Samsung", "mobile" ,"Electronics", BigDecimal.valueOf(111.11));
-        itemRepository.save(item);
+        Item saved = itemRepository.save(item);
 
-        assertEquals(6, itemRepository.findById(6L).get().id());
+        assertEquals(7, saved.id());
     }
 
     @Test

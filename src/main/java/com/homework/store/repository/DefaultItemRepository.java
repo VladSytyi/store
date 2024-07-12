@@ -41,10 +41,13 @@ public class DefaultItemRepository implements ItemRepository {
     }
 
     @Override
-    public void save(Item item) {
-        dslContext.insertInto(Items.ITEMS)
+    public Item save(Item item) {
+        return dslContext.insertInto(Items.ITEMS)
                 .set(buildItemRecord(item))
-                .execute();
+                .returning()
+                .fetchOptional()
+                .map(this::toItem)
+                .orElseThrow(() -> new RuntimeException("failed to save item"));
     }
 
 

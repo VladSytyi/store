@@ -5,6 +5,8 @@ import com.homework.store.repository.ItemRepository;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -17,6 +19,8 @@ import java.util.Objects;
 public class RepositoryConfig {
 
     private final Environment environment;
+
+    private static final Logger log = LoggerFactory.getLogger(RepositoryConfig.class);
 
     public RepositoryConfig(Environment environment) {
         this.environment = environment;
@@ -40,6 +44,10 @@ public class RepositoryConfig {
 
     @Bean
     public ItemRepository itemRepository() {
+        if (!environment.containsProperty("repo.page.size")) {
+            log.warn("repo.page.size not found in properties, using default value 10");
+        }
+
         return new DefaultItemRepository(dslContext(dataSource()), environment.getProperty("repo.page.size", Integer.class, 10));
     }
 }
