@@ -22,6 +22,7 @@ paths:
                   $ref: '#/components/schemas/Item'   # objects should be
 
 
+
 components:
   schemas:
     Item:
@@ -31,6 +32,8 @@ components:
           type: integer
         name:
           type: string
+        price:
+          type: number
       required:
         - id
         - name

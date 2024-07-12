@@ -1,4 +1,3 @@
-version: '3.9'
 
 services:
   db:
@@ -53,13 +52,10 @@ services:
 #      dockerfile: Dockerfile
 #    container_name: store
 #    environment:
-#      DB_HOST: db
-#      DB_PORT: ${DB_PORT}
-#      DB_USER: ${DB_USER}
-#      DB_PASSWORD: ${DB_PASSWORD}
-#      DB_NAME: ${DB_NAME}
-#      DB_SCHEMA: ${DB_SCHEMA}
-#      JOOQ_URL: ${JOOQ_URL}
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/store?currentSchema=store
+#      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+#      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+#      - SPRING_DATASOURCE_SCHEMA=${DB_SCHEMA}
 #
 #    ports:
 #      - '8080:8080'
@@ -68,6 +64,8 @@ services:
 #      - db
 #    networks:
 #      - app-network
+#    entrypoint: [ "/bin/sh", "-c", "./wait-for db:5432", "java","-jar","/store.jar" ]
+
 
 volumes:
   pgadmin:
