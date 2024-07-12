@@ -20,19 +20,16 @@ public class RepositoryConfig {
     private final String dbUrl;
     private final String dbUsername;
     private final String dbPassword;
-    private final Integer pageSize;
 
     public RepositoryConfig(
             @Value("${spring.datasource.driver-class-name}") String dbDriver,
             @Value("${spring.datasource.url}") String dbUrl,
             @Value("${spring.datasource.username}") String dbUsername,
-            @Value("${spring.datasource.password}") String dbPassword,
-            @Value("${spring.datasource.pageSize}") Integer pageSize) {
+            @Value("${spring.datasource.password}") String dbPassword) {
         this.dbDriver = dbDriver;
         this.dbUrl = dbUrl;
         this.dbUsername = dbUsername;
         this.dbPassword = dbPassword;
-        this.pageSize = pageSize;
     }
 
 
@@ -54,6 +51,6 @@ public class RepositoryConfig {
 
     @Bean
     public ItemRepository itemRepository() {
-        return new DefaultItemRepository(dslContext(dataSource()), pageSize);
+        return new DefaultItemRepository(dslContext(dataSource()));
     }
 }

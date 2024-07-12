@@ -14,11 +14,11 @@ import java.util.Optional;
 public class DefaultItemRepository implements ItemRepository {
 
     private final DSLContext dslContext;
-    private final Integer pageSize;
+    private final static Integer pageSize = 100;
 
-    public DefaultItemRepository(DSLContext dslContext, Integer pageSize) {
+    public DefaultItemRepository(DSLContext dslContext) {
         this.dslContext = dslContext;
-        this.pageSize = pageSize;
+        //this.pageSize = pageSize;
     }
 
     @Override
@@ -69,6 +69,8 @@ public class DefaultItemRepository implements ItemRepository {
                 .set(Items.ITEMS.NAME, item.name())
                 .set(Items.ITEMS.PRICE, item.price())
                 .set(Items.ITEMS.DESCRIPTION, item.description())
+                .set(Items.ITEMS.BRAND, item.brand())
+                .set(Items.ITEMS.CATEGORY, item.category())
                 .where(Items.ITEMS.ID.eq(item.id()))
                 .returning()
                 .fetchOptional()
@@ -81,13 +83,18 @@ public class DefaultItemRepository implements ItemRepository {
         itemsRecord.set(Items.ITEMS.NAME, item.name());
         itemsRecord.set(Items.ITEMS.PRICE, item.price());
         itemsRecord.set(Items.ITEMS.DESCRIPTION, item.description());
+        itemsRecord.set(Items.ITEMS.BRAND, item.brand());
+        itemsRecord.set(Items.ITEMS.CATEGORY, item.category());
         return itemsRecord;
     }
 
     private Item toItem(Record record) {
         return new Item(record.get(Items.ITEMS.ID),
                 record.get(Items.ITEMS.NAME),
-                record.get(Items.ITEMS.PRICE),
-                record.get(Items.ITEMS.DESCRIPTION));
+                record.get(Items.ITEMS.BRAND),
+                record.get(Items.ITEMS.DESCRIPTION),
+                record.get(Items.ITEMS.CATEGORY),
+                record.get(Items.ITEMS.PRICE)
+                );
     }
 }

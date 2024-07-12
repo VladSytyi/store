@@ -4,7 +4,7 @@ create schema if not exists store;
 drop table if exists store.items;
 
 create table store.items (
-  id bigint primary key,
+  id bigserial primary key,
   name varchar(100) not null,
   brand varchar(100),
   description varchar(255),
