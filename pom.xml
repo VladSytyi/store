@@ -16,9 +16,9 @@
 
     <properties>
         <java.version>21</java.version>
-        <db.user>${spring.datasource.username}</db.user>
-        <db.password>${spring.datasource.password}</db.password>
-        <jooq.url>${spring.datasource.url}</jooq.url>
+        <db.user>${jdbc.username}</db.user>
+        <db.password>${jdbc.password}</db.password>
+        <jooq.url>${jdbc.url}</jooq.url>
         <testcontainers.version>1.19.8</testcontainers.version>
     </properties>
     <dependencies>

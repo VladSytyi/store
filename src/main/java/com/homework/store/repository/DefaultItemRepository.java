@@ -5,6 +5,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.generated.tables.Items;
 import org.jooq.generated.tables.records.ItemsRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,11 +15,11 @@ import java.util.Optional;
 public class DefaultItemRepository implements ItemRepository {
 
     private final DSLContext dslContext;
-    private final static Integer pageSize = 100;
+    private final int pageSize;
 
-    public DefaultItemRepository(DSLContext dslContext) {
+    public DefaultItemRepository(DSLContext dslContext, @Value("${repo.page.size}") int pageSize) {
         this.dslContext = dslContext;
-        //this.pageSize = pageSize;
+        this.pageSize = pageSize;
     }
 
     @Override

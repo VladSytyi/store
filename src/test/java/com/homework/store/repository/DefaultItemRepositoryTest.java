@@ -33,11 +33,12 @@ class DefaultItemRepositoryTest {
     public static PostgreSQLContainer<PostgresTestContainer> container = PostgresTestContainer.getInstance();
 
     private static DSLContext dslContext;
+    private static final Integer pageSize = 5;
 
-    private final DefaultItemRepository itemRepository;
+    private final ItemRepository itemRepository;
 
     public DefaultItemRepositoryTest() {
-        this.itemRepository = new DefaultItemRepository(dslContext);
+        this.itemRepository = new DefaultItemRepository(dslContext, pageSize);
     }
 
     @BeforeAll
@@ -70,6 +71,7 @@ class DefaultItemRepositoryTest {
         dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartwatch', 'Apple', 'Apple Watch Series 7', 'Electronics', 399.99);");
         dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Tablet', 'Apple', 'Apple iPad Pro', 'Electronics', 799.99);");
         dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Laptop', 'Apple', 'Apple Macbook Pro', 'Electronics', 1999.99);");
+        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartphone', 'LG', 'LG S22', 'Electronics', 55.66);");
 
     }
 
@@ -93,6 +95,7 @@ class DefaultItemRepositoryTest {
 
     @Test
     void findAll() {
+        // pageSize is 5
         assertEquals(5, itemRepository.findAll().size());
     }
 
@@ -131,7 +134,7 @@ class DefaultItemRepositoryTest {
     @Test
     void deleteById() {
         itemRepository.deleteById(1L);
-        assertEquals(4, itemRepository.findAll().size());
+        assertEquals(5, itemRepository.findAll().size());
     }
 
 

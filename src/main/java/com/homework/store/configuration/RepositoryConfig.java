@@ -5,33 +5,22 @@ import com.homework.store.repository.ItemRepository;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 @Configuration
 public class RepositoryConfig {
 
-    private final String dbDriver;
-    private final String dbUrl;
-    private final String dbUsername;
-    private final String dbPassword;
+    private final Environment environment;
 
-    public RepositoryConfig(
-            @Value("${spring.datasource.driver-class-name}") String dbDriver,
-            @Value("${spring.datasource.url}") String dbUrl,
-            @Value("${spring.datasource.username}") String dbUsername,
-            @Value("${spring.datasource.password}") String dbPassword) {
-        this.dbDriver = dbDriver;
-        this.dbUrl = dbUrl;
-        this.dbUsername = dbUsername;
-        this.dbPassword = dbPassword;
+    public RepositoryConfig(Environment environment) {
+        this.environment = environment;
     }
-
 
     @Bean
     public DSLContext dslContext(DataSource dataSource) {
@@ -42,15 +31,15 @@ public class RepositoryConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(dbDriver);
-        dataSource.setUrl(dbUrl);
-        dataSource.setUsername(dbUsername);
-        dataSource.setPassword(dbPassword);
+        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("jdbc.driver")));
+        dataSource.setUrl(environment.getProperty("jdbc.url"));
+        dataSource.setUsername(environment.getProperty("jdbc.username"));
+        dataSource.setPassword(environment.getProperty("jdbc.password"));
         return dataSource;
     }
 
     @Bean
     public ItemRepository itemRepository() {
-        return new DefaultItemRepository(dslContext(dataSource()));
+        return new DefaultItemRepository(dslContext(dataSource()), environment.getProperty("repo.page.size", Integer.class, 10));
     }
 }
