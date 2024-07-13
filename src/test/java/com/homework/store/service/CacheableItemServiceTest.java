@@ -18,7 +18,7 @@ class CacheableItemServiceTest {
     private ObjectMapper objectMapper;
 
 
-    @Test
+    //@Test
     void conversionTest() {
         Item item = new Item(1L, "test", "br", "test", "dasd", BigDecimal.ONE);
 

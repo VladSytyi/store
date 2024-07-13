@@ -5,22 +5,173 @@ info:
   description: Demo project for customer
   version: 0.0.1
 
+
 paths:
   /items:
+    post:
+      tags:
+        - items
+      summary: Create a single item
+      operationId: createItem
+      requestBody:
+        description: Item to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '201':
+          description: Item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
     get:
-      operationId: find all
-      summary: returns list of items
-      description: allows to fetch all items
+      tags:
+        - items
+      summary: Fetch all items
+      operationId: getAllItems
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limit the number of items returned
       responses:
         '200':
-          description: a JSON array of items
+          description: A list of items
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Item'   # objects should be
-
+                  $ref: '#/components/schemas/Item'
+  /items/batch:
+    post:
+      tags:
+        - items
+      summary: Create multiple items
+      operationId: createMultipleItems
+      requestBody:
+        description: Array of items to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Item'
+      responses:
+        '201':
+          description: Items created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+  /items/{itemId}:
+    get:
+      tags:
+        - items
+      summary: Fetch an item by ID
+      operationId: getItemById
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: ID of the item to fetch
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Item not found
+    delete:
+      tags:
+        - items
+      summary: Delete an item by ID
+      operationId: deleteItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: ID of the item to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Item deleted successfully
+        '404':
+          description: Item not found
+    put:
+      tags:
+        - items
+      summary: Update an item by ID
+      operationId: updateItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: ID of the item to update
+          schema:
+            type: string
+      requestBody:
+        description: Updated item
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '200':
+          description: Item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Item not found
+  /items/search:
+    get:
+      tags:
+        - items
+      summary: Fetch an item by name or another field
+      operationId: searchItems
+      parameters:
+        - name: id
+          in: query
+          description: ID of the item
+          schema:
+            type: integer
+            format: int64
+        - name: name
+          in: query
+          description: Name of the item
+          schema:
+            type: string
+        - name: brand
+          in: query
+          description: Brand of the item
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item(s) fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+        '404':
+          description: Item not found
 
 
 components:

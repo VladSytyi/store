@@ -14,6 +14,7 @@ import java.io.IOException;
 public class CacheableItemService implements ItemService {
 
     private static final Logger log = LoggerFactory.getLogger(CacheableItemService.class);
+    private static final String ITEM_PREFIX = "item:";
     private final ItemService defaultItemService;
     private final JedisPooled jedis;
     private final ObjectMapper objectMapper;
@@ -27,7 +28,7 @@ public class CacheableItemService implements ItemService {
     @Override
     public Item findById(Long id) {
 
-        String itemJson = jedis.get("item:" + id);
+        String itemJson = jedis.get(ITEM_PREFIX + id);
 
         if (itemJson != null) {
             return objectMapper.convertValue(itemJson, Item.class);
@@ -36,7 +37,7 @@ public class CacheableItemService implements ItemService {
         Item item = defaultItemService.findById(id);
 
         try {
-            jedis.set("item:" + id, objectMapper.writeValueAsString(item));
+            jedis.set(ITEM_PREFIX + id, objectMapper.writeValueAsString(item));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +51,7 @@ public class CacheableItemService implements ItemService {
         Item savedItem = defaultItemService.save(item);
 
         try {
-            jedis.set("item:" + savedItem.id(), objectMapper.writeValueAsString(savedItem));
+            jedis.set(ITEM_PREFIX + savedItem.id(), objectMapper.writeValueAsString(savedItem));
         } catch (IOException e) {
             log.error("Error while saving item to cache", e);
         }
@@ -63,7 +64,7 @@ public class CacheableItemService implements ItemService {
         defaultItemService.deleteById(id);
 
         try {
-            jedis.del("item:" + id);
+            jedis.del(ITEM_PREFIX + id);
         } catch (Exception e) {
             log.error("Error while deleting item from cache", e);
         }
@@ -73,7 +74,7 @@ public class CacheableItemService implements ItemService {
     public Item update(Item item) {
         Item updatedItem = defaultItemService.update(item);
         try {
-            jedis.set("item:" + updatedItem.id(), objectMapper.writeValueAsString(updatedItem));
+            jedis.set(ITEM_PREFIX + updatedItem.id(), objectMapper.writeValueAsString(updatedItem));
         } catch (IOException e) {
             log.error("Error while updating item in cache", e);
         }

@@ -205,7 +205,8 @@
                             <configOptions>
                                 <!-- Generate no controller implementations -->
                                 <interfaceOnly>true</interfaceOnly>
-
+                                <sourceFolder>generated-sources/openapi</sourceFolder>
+                                <generatorName>java</generatorName>
                                 <modelPackage>
                                     com.homework.store.api.models
                                 </modelPackage>
@@ -214,6 +215,7 @@
                                 </apiPackage>
 
                                 <useSpringBoot3>true</useSpringBoot3>
+                                <apiSuffix>RestInterface</apiSuffix>
                                 <swaggerAnnotations>true</swaggerAnnotations>
                                 <useTags>true</useTags>
                             </configOptions>
