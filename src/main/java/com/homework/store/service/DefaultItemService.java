@@ -7,6 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Service
 public class DefaultItemService implements ItemService {
 
@@ -27,8 +31,15 @@ public class DefaultItemService implements ItemService {
     public Item create(ItemRequest item) {
         // add validation
 
-
         return itemRepository.save(mapToItem(item));
+    }
+
+    @Override
+    public void createMultipleItems(List<ItemRequest> items) {
+
+        List<Item> data = items.stream().map(this::mapToItem).collect(Collectors.toList());
+
+        itemRepository.saveAll(data);
     }
 
     @Override

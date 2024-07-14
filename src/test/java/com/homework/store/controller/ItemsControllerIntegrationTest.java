@@ -17,7 +17,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -78,5 +80,33 @@ class ItemsControllerIntegrationTest {
                         .content(itemRequestJson))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void createMultipleItems_validRequest_returnsCreatedItems() throws Exception {
+        String itemsRequestJson = "[{\"name\":\"item1\",\"price\":100.0,\"brand\":\"brand1\",\"description\":\"description1\",\"category\":\"category1\"}, {\"name\":\"item2\",\"price\":200.0,\"brand\":\"brand2\",\"description\":\"description2\",\"category\":\"category2\"}]";
+
+        mockMvc.perform(post("/items/batch")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(itemsRequestJson))
+                .andExpect(status().isOk());
+
+       //TODO: add request to validate newly create items
+    }
+
+    @Test
+    void findItemById_validRequest_returnsItem() throws Exception {
+        // caching is not available here
+
+        mockMvc.perform(get("/items/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Laptop"))
+                .andExpect(jsonPath("$.brand").value("Apple"))
+                .andExpect(jsonPath("$.description").value("Apple Macbook Pro"))
+                .andExpect(jsonPath("$.category").value("Electronics"))
+                .andExpect(jsonPath("$.price").value(1999.99));
+    }
+
+
 
 }

@@ -20,10 +20,12 @@ public class ServiceConfig {
 
     @Bean
     public ItemService itemService() {
-        return new CacheableItemService(
-                new DefaultItemService(repositoryConfig.itemRepository()),
-                cacheConfig.jedis(),
-                new ObjectMapper()
-        );
+//        return new CacheableItemService(
+//                new DefaultItemService(repositoryConfig.itemRepository()),
+//                cacheConfig.jedis(),
+//                new ObjectMapper()
+//        );
+        // TODO: Enable cache
+        return new DefaultItemService(repositoryConfig.itemRepository());
     }
 }

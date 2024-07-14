@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisPooled;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class CacheableItemService implements ItemService {
@@ -57,6 +58,12 @@ public class CacheableItemService implements ItemService {
             log.error("Error while saving item to cache", e);
         }
         return savedItem;
+    }
+
+    @Override
+    public void createMultipleItems(List<ItemRequest> items) {
+        // TODO: do we need to cache all items?
+        defaultItemService.createMultipleItems(items);
     }
 
     @Override
