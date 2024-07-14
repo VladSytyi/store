@@ -13,5 +13,11 @@ public class RabbitMQListenerService {
     @RabbitListener(queues = "http-trace")
     public void listen(String message) {
         log.info("Received message: {}", message);
+        returner(message);
+    }
+
+    // This method is used to print the message ONLY IN TESTS
+    protected String returner(String message) {
+        return message;
     }
 }
