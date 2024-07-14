@@ -8,17 +8,24 @@ import com.rabbitmq.client.AMQP;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class ServiceConfig {
 
     private final RepositoryConfig repositoryConfig;
     private final CacheConfig cacheConfig;
+    private final RabbitTemplate rabbitTemplate;
+    private final Environment environment;
 
-    public ServiceConfig(RepositoryConfig repositoryConfig, CacheConfig cacheConfig) {
+    public ServiceConfig(RepositoryConfig repositoryConfig, CacheConfig cacheConfig, RabbitTemplate rabbitTemplate, Environment environment) {
         this.repositoryConfig = repositoryConfig;
         this.cacheConfig = cacheConfig;
+        this.rabbitTemplate = rabbitTemplate;
+        this.environment = environment;
     }
 
     @Bean
@@ -34,12 +41,7 @@ public class ServiceConfig {
 
     @Bean
     public Queue httpTraceQueue() {
-        return new Queue("http-trace", true);
-    }
-
-    @Bean
-    public RabbitTemplate rabbitTemplate() {
-        return new RabbitTemplate();
+        return new Queue(Objects.requireNonNull(environment.getProperty("rabbit.queue")), true);
     }
 
     @Bean
@@ -47,9 +49,8 @@ public class ServiceConfig {
         return new ObjectMapper();
     }
 
-    // TODO: Enable http trace
-//    @Bean
-//    public HttpTraceFilter traceFilter() {
-//        return new  HttpTraceFilter(rabbitTemplate(), mapper());
-//    }
+    @Bean
+    public HttpTraceFilter traceFilter() {
+        return new HttpTraceFilter(rabbitTemplate, mapper());
+    }
 }
