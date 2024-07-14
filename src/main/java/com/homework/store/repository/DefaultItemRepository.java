@@ -9,6 +9,7 @@ import org.jooq.generated.tables.Items;
 import org.jooq.generated.tables.records.ItemsRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,7 @@ public class DefaultItemRepository implements ItemRepository {
     }
 
     @Override
+    @Transactional
     public Item save(Item item) {
         return dslContext.insertInto(Items.ITEMS)
                 .set(buildItemRecord(item))
@@ -76,6 +78,7 @@ public class DefaultItemRepository implements ItemRepository {
 
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         dslContext.deleteFrom(Items.ITEMS)
                 .where(Items.ITEMS.ID.eq(id))
@@ -83,6 +86,7 @@ public class DefaultItemRepository implements ItemRepository {
     }
 
     @Override
+    @Transactional
     public void saveAll(List<Item> items) {
         dslContext.batchInsert(
                         items.stream()
@@ -92,6 +96,7 @@ public class DefaultItemRepository implements ItemRepository {
     }
 
     @Override
+    @Transactional
     public Item update(Item item) {
         return dslContext.update(Items.ITEMS)
                 .set(Items.ITEMS.NAME, item.name())

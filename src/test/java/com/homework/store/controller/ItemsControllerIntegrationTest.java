@@ -12,8 +12,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
 
@@ -23,10 +28,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Testcontainers
 class ItemsControllerIntegrationTest {
 
-    @ClassRule
+    @Container
     public static PostgreSQLContainer<PostgresTestContainer> container = PostgresTestContainer.getInstance();
+
+    @Container
+    static RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3.8-management");
+
+    @DynamicPropertySource
+    static void registerRabbitMQProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
+        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,6 +49,7 @@ class ItemsControllerIntegrationTest {
     @BeforeAll
     static void beforeAll() {
         container.start();
+        rabbitMQContainer.start();
 
         DataSource dataSource = new DriverManagerDataSource(
                 container.getJdbcUrl(),
@@ -68,6 +84,7 @@ class ItemsControllerIntegrationTest {
     @AfterAll
     static void afterAll() {
         container.stop();
+        rabbitMQContainer.stop();
     }
 
     @Test

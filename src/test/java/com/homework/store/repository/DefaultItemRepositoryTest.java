@@ -16,9 +16,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -29,10 +34,15 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Testcontainers
 class DefaultItemRepositoryTest {
 
-    @ClassRule
+    @Container
     public static PostgreSQLContainer<PostgresTestContainer> container = PostgresTestContainer.getInstance();
+
+    @Container
+    static RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:3.8-management");
+
 
     private static DSLContext dslContext;
     private static final Integer pageSize = 5;
@@ -42,46 +52,6 @@ class DefaultItemRepositoryTest {
     public DefaultItemRepositoryTest() {
         this.itemRepository = new DefaultItemRepository(dslContext, pageSize);
     }
-
-    @BeforeAll
-    static void beforeAll() {
-        container.start();
-
-        DataSource dataSource = new DriverManagerDataSource(
-                container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword()
-        );
-
-        dslContext = DSL.using(dataSource, org.jooq.SQLDialect.POSTGRES);
-
-        dslContext.execute("drop schema if exists store cascade");
-        dslContext.execute("create schema if not exists store");
-        dslContext.execute("drop table if exists store.items");
-        dslContext.execute("""
-                create table store.items (
-                  id bigserial primary key,
-                  name varchar(100) not null,
-                  brand varchar(100),
-                  description varchar(255),
-                  category varchar(100) not null,
-                  price decimal(10, 2) not null
-                )""");
-
-        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Laptop', 'Apple', 'Apple Macbook Pro', 'Electronics', 1999.99);");
-        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartphone', 'Samsung', 'Samsung Galaxy S21', 'Electronics', 999.99);");
-        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartwatch', 'Apple', 'Apple Watch Series 7', 'Electronics', 399.99);");
-        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Tablet', 'Apple', 'Apple iPad Pro', 'Electronics', 799.99);");
-        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Laptop', 'Apple', 'Apple Macbook Pro', 'Electronics', 1999.99);");
-        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartphone', 'LG', 'LG S22', 'Electronics', 55.66);");
-
-    }
-
-    @AfterAll
-    static void afterAll() {
-        container.stop();
-    }
-
 
     @Test
     void findById() {
@@ -157,6 +127,55 @@ class DefaultItemRepositoryTest {
         assertEquals(2, items.size());
     }
 
+
+    /// Test setup
+
+    @BeforeAll
+    static void beforeAll() {
+        container.start();
+        rabbitMQContainer.start();
+
+        DataSource dataSource = new DriverManagerDataSource(
+                container.getJdbcUrl(),
+                container.getUsername(),
+                container.getPassword()
+        );
+
+        dslContext = DSL.using(dataSource, org.jooq.SQLDialect.POSTGRES);
+
+        dslContext.execute("drop schema if exists store cascade");
+        dslContext.execute("create schema if not exists store");
+        dslContext.execute("drop table if exists store.items");
+        dslContext.execute("""
+                create table store.items (
+                  id bigserial primary key,
+                  name varchar(100) not null,
+                  brand varchar(100),
+                  description varchar(255),
+                  category varchar(100) not null,
+                  price decimal(10, 2) not null
+                )""");
+
+        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Laptop', 'Apple', 'Apple Macbook Pro', 'Electronics', 1999.99);");
+        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartphone', 'Samsung', 'Samsung Galaxy S21', 'Electronics', 999.99);");
+        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartwatch', 'Apple', 'Apple Watch Series 7', 'Electronics', 399.99);");
+        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Tablet', 'Apple', 'Apple iPad Pro', 'Electronics', 799.99);");
+        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Laptop', 'Apple', 'Apple Macbook Pro', 'Electronics', 1999.99);");
+        dslContext.execute("insert into store.items (name, brand, description, category, price) values ('Smartphone', 'LG', 'LG S22', 'Electronics', 55.66);");
+
+    }
+
+    @AfterAll
+    static void afterAll() {
+        container.stop();
+        rabbitMQContainer.stop();
+    }
+
+    @DynamicPropertySource
+    static void registerRabbitMQProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
+        registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+    }
 
 
 
