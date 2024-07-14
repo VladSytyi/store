@@ -4,6 +4,7 @@ package com.homework.store.controller;
 import com.homework.store.api.controllers.ItemsApi;
 import com.homework.store.api.models.ItemRequest;
 import com.homework.store.api.models.ItemResponse;
+import com.homework.store.model.Item;
 import com.homework.store.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,9 @@ public class ItemsController implements ItemsApi {
     @Override
     public ResponseEntity<ItemResponse> createItem(ItemRequest item) {
 
-      //  itemService.save()
-     //   itemService.create(item);
+        ItemResponse itemResponse = mapToResponse(itemService.create(item));
 
-        return ItemsApi.super.createItem(item);
+        return ResponseEntity.ok(itemResponse);
     }
 
     @Override
@@ -58,5 +58,9 @@ public class ItemsController implements ItemsApi {
     @Override
     public ResponseEntity<ItemResponse> updateItem(String itemId, ItemRequest item) {
         return ItemsApi.super.updateItem(itemId, item);
+    }
+
+    private ItemResponse mapToResponse(Item item) {
+        return new ItemResponse(item.id(), item.name(), item.price(), item.brand(), item.description(), item.category());
     }
 }

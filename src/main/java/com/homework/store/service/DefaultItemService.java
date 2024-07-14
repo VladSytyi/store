@@ -26,7 +26,9 @@ public class DefaultItemService implements ItemService {
     @Override
     public Item create(ItemRequest item) {
         // add validation
-        return itemRepository.save(null);
+
+
+        return itemRepository.save(mapToItem(item));
     }
 
     @Override
@@ -39,5 +41,14 @@ public class DefaultItemService implements ItemService {
         // maybe receive model from controller , map it here / add validation / pass to repository
 
         return itemRepository.update(null);
+    }
+
+    private Item mapToItem(ItemRequest itemRequest) {
+        return new Item(null,
+                itemRequest.getName(),
+                itemRequest.getBrand(),
+                itemRequest.getDescription(),
+                itemRequest.getCategory(),
+                itemRequest.getPrice());
     }
 }

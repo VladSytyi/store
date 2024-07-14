@@ -183,13 +183,24 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         price:
           type: number
+        brand:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
       required:
         - id
         - name
+        - price
+        - brand
+        - category
+        - description
     ItemRequest:
       type: object
       properties:
