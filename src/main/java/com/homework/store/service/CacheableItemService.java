@@ -49,6 +49,11 @@ public class CacheableItemService implements ItemService {
     }
 
     @Override
+    public List<Item> findAll(Integer page) {
+        return defaultItemService.findAll(page);
+    }
+
+    @Override
     public Item create(ItemRequest item) {
         Item savedItem = defaultItemService.create(item);
 
@@ -79,8 +84,9 @@ public class CacheableItemService implements ItemService {
     }
 
     @Override
-    public Item update(ItemRequest item) {
-        Item updatedItem = defaultItemService.update(item);
+    public Item update(Long id, ItemRequest item) {
+        // Todo: improve
+        Item updatedItem = defaultItemService.update(id ,item);
         try {
             jedis.set(ITEM_PREFIX + updatedItem.id(), objectMapper.writeValueAsString(updatedItem));
         } catch (IOException e) {

@@ -17,8 +17,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -90,7 +89,17 @@ class ItemsControllerIntegrationTest {
                         .content(itemsRequestJson))
                 .andExpect(status().isOk());
 
-       //TODO: add request to validate newly create items
+        mockMvc.perform(get("/items/7"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(7))
+                .andExpect(jsonPath("$.name").value("item1"))
+                .andExpect(jsonPath("$.brand").value("brand1"));
+
+        mockMvc.perform(get("/items/8"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(8))
+                .andExpect(jsonPath("$.name").value("item2"))
+                .andExpect(jsonPath("$.brand").value("brand2"));
     }
 
     @Test
@@ -105,6 +114,49 @@ class ItemsControllerIntegrationTest {
                 .andExpect(jsonPath("$.description").value("Apple Macbook Pro"))
                 .andExpect(jsonPath("$.category").value("Electronics"))
                 .andExpect(jsonPath("$.price").value(1999.99));
+    }
+
+    @Test
+    void deleteItem_validRequest_returnsOk_and_item_not_found() throws Exception {
+        // delete item
+        mockMvc.perform(delete("/items/1"))
+                .andExpect(status().isOk());
+
+        // try to get deleted item
+        mockMvc.perform(get("/items/1"))
+                .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    void updateItem_validRequest_returnsUpdatedItem() throws Exception {
+        String itemRequestJson = "{\"name\":\"item1\",\"price\":100.0,\"brand\":\"brand1\",\"description\":\"description1\",\"category\":\"category1\"}";
+
+        // update item
+        mockMvc.perform(put("/items/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(itemRequestJson))
+                .andExpect(status().isOk());
+
+        // get updated item
+        mockMvc.perform(get("/items/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("item1"))
+                .andExpect(jsonPath("$.brand").value("brand1"))
+                .andExpect(jsonPath("$.description").value("description1"))
+                .andExpect(jsonPath("$.category").value("category1"))
+                .andExpect(jsonPath("$.price").value(100.0));
+    }
+
+    @Test
+    void findAll_with_paging_works() throws Exception {
+        mockMvc.perform(get("/items?page=0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5));
+
+        mockMvc.perform(get("/items?page=1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
 

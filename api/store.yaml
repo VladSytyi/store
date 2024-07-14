@@ -34,10 +34,11 @@ paths:
       operationId: getAllItems
       parameters:
         - in: query
-          name: limit
+          name: page
           schema:
             type: integer
-          description: Limit the number of items returned
+            minimum: 0
+          description: The page number to retrieve (0-based).
       responses:
         '200':
           description: A list of items

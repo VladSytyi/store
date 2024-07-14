@@ -96,7 +96,13 @@ class DefaultItemRepositoryTest {
     @Test
     void findAll() {
         // pageSize is 5
-        assertEquals(5, itemRepository.findAll().size());
+        assertEquals(5, itemRepository.findAll(0).size());
+    }
+
+    @Test
+    void findAllSecondPage() {
+        // pageSize is 5
+        assertEquals(1, itemRepository.findAll(1).size());
     }
 
     @Test
@@ -117,7 +123,7 @@ class DefaultItemRepositoryTest {
         Item item3 = new Item(null, "Smartphone", "Samsung", "mobile" ,"Electronics", BigDecimal.valueOf(111.11));
         itemRepository.saveAll(List.of(item1, item2, item3));
 
-        assertEquals(3, itemRepository.findAll().size());
+        assertEquals(3, itemRepository.findAll(0).size());
     }
 
     @Test
@@ -134,7 +140,7 @@ class DefaultItemRepositoryTest {
     @Test
     void deleteById() {
         itemRepository.deleteById(1L);
-        assertEquals(5, itemRepository.findAll().size());
+        assertEquals(5, itemRepository.findAll(0).size());
     }
 
 

@@ -23,10 +23,13 @@ public class DefaultItemRepository implements ItemRepository {
     }
 
     @Override
-    public List<Item> findAll() {
+    public List<Item> findAll(Integer page) {
+        int pageNumber = page * pageSize;
+
         return dslContext.select()
                 .from(Items.ITEMS)
                 .limit(pageSize)
+                .offset(pageNumber)
                 .fetch()
                 .map(this::toItem);
     }

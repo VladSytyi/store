@@ -56,12 +56,27 @@ public class ItemsController implements ItemsApi {
 
     @Override
     public ResponseEntity<Void> deleteItem(Long itemId) {
-        return ItemsApi.super.deleteItem(itemId);
+
+        try {
+            itemService.deleteById(itemId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error("Error while deleting item", e);
+            return ResponseEntity.status(500).build();
+        }
+
     }
 
     @Override
-    public ResponseEntity<List<ItemResponse>> getAllItems(Integer limit) {
-        return ItemsApi.super.getAllItems(limit);
+    public ResponseEntity<List<ItemResponse>> getAllItems(Integer page) {
+
+        try {
+            List<Item> items = itemService.findAll(page);
+            return ResponseEntity.ok(items.stream().map(this::mapToResponse).toList());
+        } catch (Exception e) {
+            log.error("Error while getting items", e);
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @Override
@@ -85,7 +100,14 @@ public class ItemsController implements ItemsApi {
 
     @Override
     public ResponseEntity<ItemResponse> updateItem(Long itemId, ItemRequest item) {
-        return ItemsApi.super.updateItem(itemId, item);
+        try {
+            Item updatedItem = itemService.update(itemId, item);
+            return ResponseEntity.ok(mapToResponse(updatedItem));
+
+        } catch (Exception e) {
+            log.error("Error while updating item", e);
+            return ResponseEntity.status(500).build();
+        }
     }
 
     private ItemResponse mapToResponse(Item item) {

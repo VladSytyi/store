@@ -28,6 +28,12 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
+    public List<Item> findAll(Integer page) {
+
+        return itemRepository.findAll(page);
+    }
+
+    @Override
     public Item create(ItemRequest item) {
         // add validation
 
@@ -48,14 +54,23 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public Item update(ItemRequest item) {
+    public Item update(Long id, ItemRequest item) {
         // maybe receive model from controller , map it here / add validation / pass to repository
 
-        return itemRepository.update(null);
+        return itemRepository.update(mapToItemWithId(id, item));
     }
 
     private Item mapToItem(ItemRequest itemRequest) {
         return new Item(null,
+                itemRequest.getName(),
+                itemRequest.getBrand(),
+                itemRequest.getDescription(),
+                itemRequest.getCategory(),
+                itemRequest.getPrice());
+    }
+
+    private Item mapToItemWithId(Long id, ItemRequest itemRequest) {
+        return new Item(id,
                 itemRequest.getName(),
                 itemRequest.getBrand(),
                 itemRequest.getDescription(),

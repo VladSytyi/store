@@ -9,11 +9,13 @@ public interface ItemService {
 
     Item findById(Long id);
 
+    List<Item> findAll(Integer page);
+
     Item create(ItemRequest item);
 
     void createMultipleItems(List<ItemRequest> items);
 
     void deleteById(Long id);
 
-    Item update(ItemRequest item);
+    Item update(Long id, ItemRequest item);
 }
