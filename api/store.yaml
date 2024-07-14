@@ -19,14 +19,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Item'
+              $ref: '#/components/schemas/ItemRequest'
       responses:
         '201':
           description: Item created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Item'
+                $ref: '#/components/schemas/ItemResponse'
     get:
       tags:
         - items
@@ -46,7 +46,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Item'
+                  $ref: '#/components/schemas/ItemResponse'
   /items/batch:
     post:
       tags:
@@ -61,7 +61,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Item'
+                $ref: '#/components/schemas/ItemRequest'
       responses:
         '201':
           description: Items created successfully
@@ -70,7 +70,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Item'
+                  $ref: '#/components/schemas/ItemResponse'
   /items/{itemId}:
     get:
       tags:
@@ -90,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Item'
+                $ref: '#/components/schemas/ItemResponse'
         '404':
           description: Item not found
     delete:
@@ -128,14 +128,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Item'
+              $ref: '#/components/schemas/ItemRequest'
       responses:
         '200':
           description: Item updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Item'
+                $ref: '#/components/schemas/ItemResponse'
         '404':
           description: Item not found
   /items/search:
@@ -169,14 +169,16 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Item'
+                  $ref: '#/components/schemas/ItemResponse'
         '404':
           description: Item not found
 
 
+# Long id, String name, String brand, String description, String category,BigDecimal price
+
 components:
   schemas:
-    Item:
+    ItemResponse:
       type: object
       properties:
         id:
@@ -188,5 +190,23 @@ components:
       required:
         - id
         - name
+    ItemRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        brand:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+      required:
+        - name
+        - brand
+        - price
+        - category
 
 

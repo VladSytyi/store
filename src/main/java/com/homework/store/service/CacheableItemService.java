@@ -2,6 +2,7 @@ package com.homework.store.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.homework.store.api.models.ItemRequest;
 import com.homework.store.model.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,8 @@ public class CacheableItemService implements ItemService {
     }
 
     @Override
-    public Item save(Item item) {
-        Item savedItem = defaultItemService.save(item);
+    public Item create(ItemRequest item) {
+        Item savedItem = defaultItemService.create(item);
 
         try {
             jedis.set(ITEM_PREFIX + savedItem.id(), objectMapper.writeValueAsString(savedItem));
@@ -71,7 +72,7 @@ public class CacheableItemService implements ItemService {
     }
 
     @Override
-    public Item update(Item item) {
+    public Item update(ItemRequest item) {
         Item updatedItem = defaultItemService.update(item);
         try {
             jedis.set(ITEM_PREFIX + updatedItem.id(), objectMapper.writeValueAsString(updatedItem));

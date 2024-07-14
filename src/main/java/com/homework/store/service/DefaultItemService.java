@@ -1,5 +1,6 @@
 package com.homework.store.service;
 
+import com.homework.store.api.models.ItemRequest;
 import com.homework.store.model.Item;
 import com.homework.store.repository.ItemRepository;
 import org.slf4j.Logger;
@@ -23,9 +24,9 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public Item save(Item item) {
+    public Item create(ItemRequest item) {
         // add validation
-        return itemRepository.save(item);
+        return itemRepository.save(null);
     }
 
     @Override
@@ -34,9 +35,9 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public Item update(Item item) {
+    public Item update(ItemRequest item) {
         // maybe receive model from controller , map it here / add validation / pass to repository
 
-        return itemRepository.update(item);
+        return itemRepository.update(null);
     }
 }
