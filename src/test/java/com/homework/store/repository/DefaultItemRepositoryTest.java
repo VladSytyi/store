@@ -1,6 +1,7 @@
 package com.homework.store.repository;
 
 import com.homework.store.PostgresTestContainer;
+import com.homework.store.model.Criteria;
 import com.homework.store.model.Item;
 import org.jooq.CloseableDSLContext;
 import org.jooq.DSLContext;
@@ -23,6 +24,7 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -141,6 +143,18 @@ class DefaultItemRepositoryTest {
     void deleteById() {
         itemRepository.deleteById(1L);
         assertEquals(5, itemRepository.findAll(0).size());
+    }
+
+    @Test
+    void findBySingleCriteria() {
+        List<Item> items = itemRepository.findByCriteria(Map.of(Criteria.NAME, "Laptop"));
+        assertEquals(2, items.size());
+    }
+
+    @Test
+    void findByMultipleCriteria() {
+        List<Item> items = itemRepository.findByCriteria(Map.of(Criteria.BRAND, "Apple", Criteria.NAME, "Laptop"));
+        assertEquals(2, items.size());
     }
 
 

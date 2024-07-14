@@ -1,6 +1,7 @@
 package com.homework.store.service;
 
 import com.homework.store.api.models.ItemRequest;
+import com.homework.store.model.Criteria;
 import com.homework.store.model.Item;
 import com.homework.store.repository.ItemRepository;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,6 +33,14 @@ public class DefaultItemService implements ItemService {
     public List<Item> findAll(Integer page) {
 
         return itemRepository.findAll(page);
+    }
+
+    @Override
+    public List<Item> search(Map<Criteria, String> searchParams) {
+        // write filter logic to remove all entries from searchParams where value is null
+        searchParams.entrySet().removeIf(entry -> entry.getValue() == null);
+
+        return itemRepository.findByCriteria(searchParams);
     }
 
     @Override

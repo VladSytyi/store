@@ -3,6 +3,7 @@ package com.homework.store.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homework.store.api.models.ItemRequest;
+import com.homework.store.model.Criteria;
 import com.homework.store.model.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import redis.clients.jedis.JedisPooled;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CacheableItemService implements ItemService {
@@ -51,6 +53,11 @@ public class CacheableItemService implements ItemService {
     @Override
     public List<Item> findAll(Integer page) {
         return defaultItemService.findAll(page);
+    }
+
+    @Override
+    public List<Item> search(Map<Criteria, String> searchParams) {
+        return defaultItemService.search(searchParams);
     }
 
     @Override

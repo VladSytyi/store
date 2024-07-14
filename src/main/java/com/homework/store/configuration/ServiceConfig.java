@@ -2,9 +2,8 @@ package com.homework.store.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homework.store.service.DefaultItemService;
-import com.homework.store.service.HttpTraceFilter;
+//import com.homework.store.controller.filter.HttpTraceFilter;
 import com.homework.store.service.ItemService;
-import com.rabbitmq.client.AMQP;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
@@ -39,18 +38,18 @@ public class ServiceConfig {
         return new DefaultItemService(repositoryConfig.itemRepository());
     }
 
-    @Bean
-    public Queue httpTraceQueue() {
-        return new Queue(Objects.requireNonNull(environment.getProperty("rabbit.queue")), true);
-    }
+//    @Bean
+//    public Queue httpTraceQueue() {
+//        return new Queue(Objects.requireNonNull(environment.getProperty("rabbit.queue")), true);
+//    }
 
     @Bean
     public ObjectMapper mapper() {
         return new ObjectMapper();
     }
 
-    @Bean
-    public HttpTraceFilter traceFilter() {
-        return new HttpTraceFilter(rabbitTemplate, mapper());
-    }
+//    @Bean
+//    public HttpTraceFilter traceFilter() {
+//        return new HttpTraceFilter(rabbitTemplate, mapper());
+//    }
 }

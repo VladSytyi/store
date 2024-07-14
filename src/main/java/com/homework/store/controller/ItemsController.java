@@ -4,6 +4,7 @@ package com.homework.store.controller;
 import com.homework.store.api.controllers.ItemsApi;
 import com.homework.store.api.models.ItemRequest;
 import com.homework.store.api.models.ItemResponse;
+import com.homework.store.model.Criteria;
 import com.homework.store.model.Item;
 import com.homework.store.service.ItemService;
 import jakarta.validation.Valid;
@@ -12,7 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 @RestController
 public class ItemsController implements ItemsApi {
@@ -93,8 +100,21 @@ public class ItemsController implements ItemsApi {
     }
 
     @Override
-    public ResponseEntity<List<ItemResponse>> searchItems(Long id, String name, String brand) {
-        return ItemsApi.super.searchItems(id, name, brand);
+    public ResponseEntity<List<ItemResponse>> searchItems(String id, String name, String brand) {
+
+        try {
+            Map<Criteria, String> searchParams = new HashMap<>();
+            searchParams.putIfAbsent(Criteria.ID, id);
+            searchParams.putIfAbsent(Criteria.NAME, name);
+            searchParams.putIfAbsent(Criteria.BRAND, brand);
+
+
+            var list = itemService.search(searchParams).stream().map(this::mapToResponse).toList();
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            log.error("Error while searching items", e);
+            return ResponseEntity.status(500).build();
+        }
     }
 
 

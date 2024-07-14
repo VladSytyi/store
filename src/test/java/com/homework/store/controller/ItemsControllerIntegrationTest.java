@@ -117,6 +117,19 @@ class ItemsControllerIntegrationTest {
     }
 
     @Test
+    void findByCriteria_validRequest_returnsItems() throws Exception {
+        mockMvc.perform(get("/items/search?name=Smartphone&brand=Samsung"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(2))
+                .andExpect(jsonPath("$[0].name").value("Smartphone"))
+                .andExpect(jsonPath("$[0].brand").value("Samsung"))
+                .andExpect(jsonPath("$[0].description").value("Samsung Galaxy S21"))
+                .andExpect(jsonPath("$[0].category").value("Electronics"));
+    }
+
+
+    @Test
     void deleteItem_validRequest_returnsOk_and_item_not_found() throws Exception {
         // delete item
         mockMvc.perform(delete("/items/1"))
@@ -158,7 +171,4 @@ class ItemsControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
     }
-
-
-
 }

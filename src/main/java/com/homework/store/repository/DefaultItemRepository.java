@@ -1,6 +1,8 @@
 package com.homework.store.repository;
 
+import com.homework.store.model.Criteria;
 import com.homework.store.model.Item;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.generated.tables.Items;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -40,6 +44,23 @@ public class DefaultItemRepository implements ItemRepository {
                 .from(Items.ITEMS)
                 .where(Items.ITEMS.ID.eq(id))
                 .fetchOptional()
+                .map(this::toItem);
+    }
+
+    @Override
+    public List<Item> findByCriteria(Map<Criteria, String> searchParams) {
+        return dslContext.select()
+                .from(Items.ITEMS)
+                .where(searchParams.entrySet().stream()
+                        .map(entry -> switch (entry.getKey()) {
+                            case ID -> Items.ITEMS.ID.eq(Long.parseLong(entry.getValue()));
+                            case NAME -> Items.ITEMS.NAME.eq(entry.getValue());
+                            case BRAND -> Items.ITEMS.BRAND.eq(entry.getValue());
+                        })
+                        .reduce(Condition::and)
+                        .orElseThrow(() -> new RuntimeException("failed to build query"))
+                )
+                .fetch()
                 .map(this::toItem);
     }
 
@@ -102,6 +123,6 @@ public class DefaultItemRepository implements ItemRepository {
                 record.get(Items.ITEMS.DESCRIPTION),
                 record.get(Items.ITEMS.CATEGORY),
                 record.get(Items.ITEMS.PRICE)
-                );
+        );
     }
 }

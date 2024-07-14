@@ -148,8 +148,7 @@ paths:
           in: query
           description: ID of the item
           schema:
-            type: integer
-            format: int64
+            type: String
         - name: name
           in: query
           description: Name of the item
