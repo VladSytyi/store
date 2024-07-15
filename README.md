@@ -1,10 +1,6 @@
 # store
 Demo project for interview
 
-
-# store
-Demo project for interview
-
 ## Prerequisites
 - Docker
 - Docker Compose
@@ -16,9 +12,11 @@ Demo project for interview
 3. In the projects classpath Run `./mvnw clean install` to build the project
 4. Build docker image `docker build -t store:0.0.1 .`
 5. Run the docker image `docker run --env-file .env -p 8080:8080 store:0.0.1`.  
-6. In case of success you should see 'OK' message
-7. To connect to PGAdmin, open 'http://localhost:5050' in your browser
-
+6. To connect to Swagger, open 'http://localhost:8080/test/api.html' in your browser. APi secured with basic auth. Use `user` and `pw3` as credentials.
+7. The database already has some data. You can check it by connecting to the database or see init.sql file.
+8. To connect to PGAdmin, open 'http://localhost:5050' in your browser ( use `host.docker.internal` as host to connect to the database )
+9. To connect to RabbitMQ, open 'http://localhost:15672' in your browser
+10. To check HTTP trace bean works see the logs, it will start with `store.listener.RabbitMQListener  `
 
 
 Default Credentials: 
