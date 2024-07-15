@@ -1,6 +1,6 @@
 package com.homework.store.repository;
 
-import com.homework.store.model.Criteria;
+import com.homework.store.model.SearchCriteria;
 import com.homework.store.model.Item;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -49,7 +48,7 @@ public class DefaultItemRepository implements ItemRepository {
     }
 
     @Override
-    public List<Item> findByCriteria(Map<Criteria, String> searchParams) {
+    public List<Item> findByCriteria(Map<SearchCriteria, String> searchParams) {
         return dslContext.select()
                 .from(Items.ITEMS)
                 .where(searchParams.entrySet().stream()

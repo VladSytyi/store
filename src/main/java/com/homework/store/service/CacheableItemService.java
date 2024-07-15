@@ -3,7 +3,7 @@ package com.homework.store.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homework.store.api.models.ItemRequest;
-import com.homework.store.model.Criteria;
+import com.homework.store.model.SearchCriteria;
 import com.homework.store.model.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class CacheableItemService implements ItemService {
     }
 
     @Override
-    public List<Item> search(Map<Criteria, String> searchParams) {
+    public List<Item> search(Map<SearchCriteria, String> searchParams) {
         return defaultItemService.search(searchParams);
     }
 

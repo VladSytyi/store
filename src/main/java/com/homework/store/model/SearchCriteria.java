@@ -1,13 +1,13 @@
 package com.homework.store.model;
 
-public enum Criteria {
+public enum SearchCriteria {
     ID("id"),
     NAME("name"),
     BRAND("brand");
 
     private final String value;
 
-    Criteria(String value) {
+    SearchCriteria(String value) {
         this.value = value;
     }
 

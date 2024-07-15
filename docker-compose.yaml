@@ -38,10 +38,6 @@ services:
       memlock: -1
     ports:
       - "6379:6379"
-    # For better performance, consider `host` mode instead `port` to avoid docker NAT.
-    # `host` mode is NOT currently supported in Swarm Mode.
-    # https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
-    # network_mode: "host"
     volumes:
       - dragonflydata:/data
     networks:
@@ -61,28 +57,6 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
       - ./rabbitmq_definitions.json:/etc/rabbitmq/definitions.json:ro
-
-#  app:
-#    image: 'store:latest'
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    container_name: store
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/store?currentSchema=store
-#      - SPRING_DATASOURCE_USERNAME=${DB_USER}
-#      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
-#      - SPRING_DATASOURCE_SCHEMA=${DB_SCHEMA}
-#
-#    ports:
-#      - '8080:8080'
-#      - '9090:9090'   # for Actuator
-#    depends_on:
-#      - db
-#    networks:
-#      - app-network
-#    entrypoint: [ "/bin/sh", "-c", "./wait-for db:5432", "java","-jar","/store.jar" ]
-
 
 volumes:
   pgadmin:

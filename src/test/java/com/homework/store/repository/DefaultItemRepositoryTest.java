@@ -1,32 +1,23 @@
 package com.homework.store.repository;
 
 import com.homework.store.PostgresTestContainer;
-import com.homework.store.model.Criteria;
+import com.homework.store.model.SearchCriteria;
 import com.homework.store.model.Item;
-import org.jooq.CloseableDSLContext;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.generated.tables.Items;
 import org.jooq.impl.DSL;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -117,13 +108,13 @@ class DefaultItemRepositoryTest {
 
     @Test
     void findBySingleCriteria() {
-        List<Item> items = itemRepository.findByCriteria(Map.of(Criteria.NAME, "Laptop"));
+        List<Item> items = itemRepository.findByCriteria(Map.of(SearchCriteria.NAME, "Laptop"));
         assertEquals(2, items.size());
     }
 
     @Test
     void findByMultipleCriteria() {
-        List<Item> items = itemRepository.findByCriteria(Map.of(Criteria.BRAND, "Apple", Criteria.NAME, "Laptop"));
+        List<Item> items = itemRepository.findByCriteria(Map.of(SearchCriteria.BRAND, "Apple", SearchCriteria.NAME, "Laptop"));
         assertEquals(2, items.size());
     }
 

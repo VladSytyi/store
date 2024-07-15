@@ -3,7 +3,6 @@ package com.homework.store.controller;
 import com.homework.store.PostgresTestContainer;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,9 +25,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @SpringBootTest
-@AutoConfigureMockMvc
 @Testcontainers
+@AutoConfigureMockMvc(addFilters = false)
 class ItemsControllerIntegrationTest {
 
     @Container

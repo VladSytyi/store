@@ -1,7 +1,7 @@
 package com.homework.store.service;
 
 import com.homework.store.api.models.ItemRequest;
-import com.homework.store.model.Criteria;
+import com.homework.store.model.SearchCriteria;
 import com.homework.store.model.Item;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface ItemService {
 
     List<Item> findAll(Integer page);
 
-    List<Item> search(Map<Criteria, String> searchParams);
+    List<Item> search(Map<SearchCriteria, String> searchParams);
 
     Item create(ItemRequest item);
 
